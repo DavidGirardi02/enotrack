@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../models/category.dart';
 import '../../providers/subcategory_provider.dart';
+import '../wine/wine_list_screen.dart';
 
 class CategoryScreen extends ConsumerWidget {
   final WineCategory category;
@@ -33,8 +34,16 @@ class CategoryScreen extends ConsumerWidget {
               title: Text(sub.nome),
               trailing: const Icon(Icons.chevron_right),
               onTap: () {
-                debugPrint(sub.nome);
-              },
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                    builder: (_) => WineListScreen(
+                        subCategoryId: sub.id,
+                        title: sub.nome,
+                    ),
+                    ),
+                );
+                },
             ),
           );
         },
