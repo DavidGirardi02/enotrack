@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/category_provider.dart';
 import '../../widgets/category_card.dart';
 import '../category/category_screen.dart';
+import '../wine/wine_list_screen.dart';
+import '../../services/firestore_wine_service.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -14,7 +16,18 @@ class HomeScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("🍷 Cantina Manager"),
+        title: FutureBuilder(
+        future: FirestoreWineService().getAll(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return const Text("Caricamento...");
+          }
+
+          return Text(
+            "🍷 ${snapshot.data!.length} vini",
+          );
+        },
+      ),
         centerTitle: true,
       ),
       body: ListView.builder(
@@ -28,14 +41,26 @@ class HomeScreen extends ConsumerWidget {
             child: CategoryCard(
               category: category,
               onTap: () {
-                Navigator.push(
+                if (category.hasSubCategories) {
+                    Navigator.push(
                     context,
                     MaterialPageRoute(
-                    builder: (_) => CategoryScreen(
+                        builder: (_) => CategoryScreen(
                         category: category,
+                        ),
                     ),
+                    );
+                } else {
+                    Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => WineListScreen(
+                            categoryId: category.id,
+                            title: category.nome,
+                        )
                     ),
-                );
+                    );
+                }
                 },
             ),
           );

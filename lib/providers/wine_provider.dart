@@ -1,14 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../models/wine.dart';
 import '../repositories/wine_repository.dart';
+import '../services/wine_service.dart';
 
-final wineRepositoryProvider =
-    Provider((ref) => WineRepository());
+final wineServiceProvider = Provider<WineService>((ref) {
+  return WineService();
+});
 
-final winesProvider =
-    Provider.family<List<Wine>, String>((ref, subCategoryId) {
-  return ref
-      .read(wineRepositoryProvider)
-      .getBySubCategory(subCategoryId);
+final wineRepositoryProvider = Provider<WineRepository>((ref) {
+  return WineRepository(ref.read(wineServiceProvider));
 });

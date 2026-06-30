@@ -1,62 +1,121 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../providers/wine_provider.dart';
+import '../../providers/wine_notifier.dart';
 import '../../widgets/wine_card.dart';
 import 'wine_detail_screen.dart';
 import 'wine_form_screen.dart';
 
-class WineListScreen extends ConsumerWidget {
-  final String subCategoryId;
+class WineListScreen extends ConsumerStatefulWidget {
+  final String categoryId;
+  final String? subCategoryId;
   final String title;
 
   const WineListScreen({
     super.key,
-    required this.subCategoryId,
+    required this.categoryId,
+    this.subCategoryId,
     required this.title,
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final wines = ref.watch(
-      winesProvider(subCategoryId),
-    );
+  ConsumerState<WineListScreen> createState() =>
+      _WineListScreenState();
+}
+
+class _WineListScreenState
+    extends ConsumerState<WineListScreen> {
+
+  final searchController = TextEditingController();
+
+  String search = "";
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final allWines = ref.watch(winesNotifierProvider);
+
+    final wines = allWines.where((wine) {
+      final categoryOk = wine.categoriaId == widget.categoryId;
+
+      final subCategoryOk = widget.subCategoryId == null
+          ? true
+          : wine.sottocategoriaId == widget.subCategoryId;
+
+      final searchOk = wine.nome
+          .toLowerCase()
+          .contains(search.toLowerCase());
+
+      return categoryOk && subCategoryOk && searchOk;
+    }).toList();
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: Text(widget.title),
       ),
 
-    floatingActionButton: FloatingActionButton(
-        onPressed: () {
-            Navigator.push(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          await Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (_) => const WineFormScreen(),
+              builder: (_) => WineFormScreen(
+                categoryId: widget.categoryId,
+                subCategoryId: widget.subCategoryId,
+              ),
             ),
-            );
-        },
-        child: const Icon(Icons.add),
-        ),
-
-      body: ListView.builder(
-        padding: const EdgeInsets.all(16),
-        itemCount: wines.length,
-        itemBuilder: (context, index) {
-          return WineCard(
-            wine: wines[index],
-            onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                    builder: (_) => WineDetailScreen(
-                        wine: wines[index],
-                    ),
-                    ),
-                );
-                },
           );
         },
+        child: const Icon(Icons.add),
+      ),
+
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+
+            TextField(
+              controller: searchController,
+              decoration: const InputDecoration(
+                prefixIcon: Icon(Icons.search),
+                hintText: "Cerca vino...",
+              ),
+              onChanged: (value) {
+                setState(() {
+                  search = value;
+                });
+              },
+            ),
+
+            const SizedBox(height: 16),
+
+            Expanded(
+              child: ListView.builder(
+                itemCount: wines.length,
+                itemBuilder: (context, index) {
+                  return WineCard(
+                    wine: wines[index],
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => WineDetailScreen(
+                            wine: wines[index],
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

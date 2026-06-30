@@ -2,7 +2,9 @@ import '../models/wine.dart';
 import '../services/wine_service.dart';
 
 class WineRepository {
-  final WineService _service = WineService();
+  final WineService _service;
+
+  WineRepository(this._service);
 
   List<Wine> getAll() {
     return _service.getAll();

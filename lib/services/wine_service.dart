@@ -2,7 +2,7 @@ import '../models/wine.dart';
 
 class WineService {
   final List<Wine> _wines = [
-    const Wine(
+    Wine(
       id: '1',
       nome: 'Amarone della Valpolicella',
       categoriaId: 'rossi',
@@ -12,7 +12,7 @@ class WineService {
       quantita: 12,
       descrizione: 'Rosso corposo con note di ciliegia e cacao.',
     ),
-    const Wine(
+    Wine(
       id: '2',
       nome: 'Barolo',
       categoriaId: 'rossi',
@@ -22,7 +22,7 @@ class WineService {
       quantita: 8,
       descrizione: 'Elegante e strutturato.',
     ),
-    const Wine(
+    Wine(
       id: '3',
       nome: 'Chablis',
       categoriaId: 'bianchi',

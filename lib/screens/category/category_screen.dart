@@ -38,9 +38,10 @@ class CategoryScreen extends ConsumerWidget {
                     context,
                     MaterialPageRoute(
                     builder: (_) => WineListScreen(
+                        categoryId: category.id,
                         subCategoryId: sub.id,
                         title: sub.nome,
-                    ),
+                        )
                     ),
                 );
                 },
