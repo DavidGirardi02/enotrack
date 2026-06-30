@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../models/wine.dart';
-import '../../providers/wine_notifier.dart';
+import '../../providers/firestore_wines_provider.dart';
 import 'wine_form_screen.dart';
 
 class WineDetailScreen extends ConsumerWidget {
@@ -108,11 +108,13 @@ class WineDetailScreen extends ConsumerWidget {
                   );
 
                   if (conferma == true) {
-                    ref
-                        .read(winesNotifierProvider.notifier)
+                    await ref
+                        .read(firestoreWineServiceProvider)
                         .deleteWine(wine.id);
 
-                    Navigator.pop(context);
+                    if (context.mounted) {
+                      Navigator.pop(context);
+                    }
                   }
                 },
               ),
