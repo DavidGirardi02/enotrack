@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../providers/category_provider.dart';
 import '../../widgets/category_card.dart';
+import '../category/category_screen.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -27,8 +28,15 @@ class HomeScreen extends ConsumerWidget {
             child: CategoryCard(
               category: category,
               onTap: () {
-                debugPrint(category.nome);
-              },
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                    builder: (_) => CategoryScreen(
+                        category: category,
+                    ),
+                    ),
+                );
+                },
             ),
           );
         },
