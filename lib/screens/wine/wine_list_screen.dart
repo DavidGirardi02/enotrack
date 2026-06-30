@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../providers/wine_notifier.dart';
+import '../../providers/firestore_wines_provider.dart';
 import '../../widgets/wine_card.dart';
 import 'wine_detail_screen.dart';
 import 'wine_form_screen.dart';
@@ -23,9 +23,7 @@ class WineListScreen extends ConsumerStatefulWidget {
       _WineListScreenState();
 }
 
-class _WineListScreenState
-    extends ConsumerState<WineListScreen> {
-
+class _WineListScreenState extends ConsumerState<WineListScreen> {
   final searchController = TextEditingController();
 
   String search = "";
@@ -38,27 +36,12 @@ class _WineListScreenState
 
   @override
   Widget build(BuildContext context) {
-    final allWines = ref.watch(winesNotifierProvider);
-
-    final wines = allWines.where((wine) {
-      final categoryOk = wine.categoriaId == widget.categoryId;
-
-      final subCategoryOk = widget.subCategoryId == null
-          ? true
-          : wine.sottocategoriaId == widget.subCategoryId;
-
-      final searchOk = wine.nome
-          .toLowerCase()
-          .contains(search.toLowerCase());
-
-      return categoryOk && subCategoryOk && searchOk;
-    }).toList();
+    final winesAsync = ref.watch(winesStreamProvider);
 
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
       ),
-
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           await Navigator.push(
@@ -73,12 +56,10 @@ class _WineListScreenState
         },
         child: const Icon(Icons.add),
       ),
-
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-
             TextField(
               controller: searchController,
               decoration: const InputDecoration(
@@ -95,19 +76,48 @@ class _WineListScreenState
             const SizedBox(height: 16),
 
             Expanded(
-              child: ListView.builder(
-                itemCount: wines.length,
-                itemBuilder: (context, index) {
-                  return WineCard(
-                    wine: wines[index],
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => WineDetailScreen(
-                            wine: wines[index],
-                          ),
-                        ),
+              child: winesAsync.when(
+                loading: () =>
+                    const Center(child: CircularProgressIndicator()),
+
+                error: (err, stack) =>
+                    Center(child: Text(err.toString())),
+
+                data: (allWines) {
+                  final wines = allWines.where((wine) {
+                    final categoryOk =
+                        wine.categoriaId == widget.categoryId;
+
+                    final subCategoryOk =
+                        widget.subCategoryId == null
+                            ? true
+                            : wine.sottocategoriaId ==
+                                widget.subCategoryId;
+
+                    final searchOk = wine.nome
+                        .toLowerCase()
+                        .contains(search.toLowerCase());
+
+                    return categoryOk &&
+                        subCategoryOk &&
+                        searchOk;
+                  }).toList();
+
+                  return ListView.builder(
+                    itemCount: wines.length,
+                    itemBuilder: (context, index) {
+                      return WineCard(
+                        wine: wines[index],
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => WineDetailScreen(
+                                wine: wines[index],
+                              ),
+                            ),
+                          );
+                        },
                       );
                     },
                   );
