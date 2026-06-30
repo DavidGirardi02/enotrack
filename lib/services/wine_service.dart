@@ -12,7 +12,6 @@ class WineService {
       quantita: 12,
       descrizione: 'Rosso corposo con note di ciliegia e cacao.',
     ),
-
     const Wine(
       id: '2',
       nome: 'Barolo',
@@ -23,7 +22,6 @@ class WineService {
       quantita: 8,
       descrizione: 'Elegante e strutturato.',
     ),
-
     const Wine(
       id: '3',
       nome: 'Chablis',
@@ -38,5 +36,25 @@ class WineService {
 
   List<Wine> getAll() {
     return _wines;
+  }
+
+  void add(Wine wine) {
+    _wines.add(wine);
+  }
+
+  void update(Wine wine) {
+    final index = _wines.indexWhere(
+      (element) => element.id == wine.id,
+    );
+
+    if (index != -1) {
+      _wines[index] = wine;
+    }
+  }
+
+  void delete(String id) {
+    _wines.removeWhere(
+      (wine) => wine.id == id,
+    );
   }
 }

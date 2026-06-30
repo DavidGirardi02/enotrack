@@ -14,4 +14,16 @@ class WineRepository {
         .where((wine) => wine.sottocategoriaId == subCategoryId)
         .toList();
   }
+
+  void add(Wine wine) {
+    _service.add(wine);
+  }
+
+  void update(Wine wine) {
+    _service.update(wine);
+  }
+
+  void delete(String id) {
+    _service.delete(id);
+  }
 }
