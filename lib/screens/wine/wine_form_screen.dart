@@ -3,8 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../models/wine.dart';
-import '../../providers/wine_provider.dart';
-import '../../providers/wine_notifier.dart';
+import '../../providers/firestore_wines_provider.dart';
 
 class WineFormScreen extends ConsumerStatefulWidget {
   final String categoryId;
@@ -53,7 +52,7 @@ class _WineFormScreenState extends ConsumerState<WineFormScreen> {
     super.dispose();
   }
 
-  void salva() {
+  Future<void> salva() async {
     if (!_formKey.currentState!.validate()) return;
 
     final wine = Wine(
@@ -67,13 +66,17 @@ class _WineFormScreenState extends ConsumerState<WineFormScreen> {
       descrizione: descrizioneController.text.trim(),
     );
 
+    final service = ref.read(firestoreWineServiceProvider);
+
     if (widget.wine == null) {
-        ref.read(winesNotifierProvider.notifier).addWine(wine);
+      await service.addWine(wine);
     } else {
-        ref.read(winesNotifierProvider.notifier).updateWine(wine);
+      await service.updateWine(wine);
     }
 
-    Navigator.pop(context, true);
+    if (mounted) {
+      Navigator.pop(context, true);
+    }
   }
 
   @override
