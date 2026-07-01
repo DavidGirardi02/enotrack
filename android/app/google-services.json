@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "887434577231",
-    "project_id": "cantina-manager-557e5",
-    "storage_bucket": "cantina-manager-557e5.firebasestorage.app"
+    "project_number": "747789044349",
+    "project_id": "enotrack-dev",
+    "storage_bucket": "enotrack-dev.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:887434577231:android:b36fab9661780a2b81713a",
+        "mobilesdk_app_id": "1:747789044349:android:c1c97eab81ad643a8fbf14",
         "android_client_info": {
           "package_name": "com.example.cantina_manager_3"
         }
@@ -15,7 +15,26 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyD7GP5Z7-ZuLVslRFeAz7IpOD5vjqmFwvI"
+          "current_key": "AIzaSyDkoF4Zd5I41dmoU65_UjGNAmoXVul7lhc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:747789044349:android:822ecf93085541fc8fbf14",
+        "android_client_info": {
+          "package_name": "com.example.enotrack.dev"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDkoF4Zd5I41dmoU65_UjGNAmoXVul7lhc"
         }
       ],
       "services": {
