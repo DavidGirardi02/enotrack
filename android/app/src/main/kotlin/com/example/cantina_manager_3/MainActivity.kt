@@ -1,4 +1,4 @@
-package com.example.cantina_manager_3
+package com.enotrack.app
 
 import io.flutter.embedding.android.FlutterActivity
 
