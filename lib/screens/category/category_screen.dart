@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../models/category.dart';
 import '../../providers/subcategory_provider.dart';
+import '../../widgets/v2/subcategory_tile.dart';
 import '../wine/wine_list_screen.dart';
 
 class CategoryScreen extends ConsumerWidget {
@@ -22,32 +23,47 @@ class CategoryScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(category.nome),
+        centerTitle: false,
       ),
-      body: ListView.builder(
-        padding: const EdgeInsets.all(16),
-        itemCount: subCategories.length,
-        itemBuilder: (context, index) {
-          final sub = subCategories[index];
-
-          return Card(
-            child: ListTile(
-              title: Text(sub.nome),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                    builder: (_) => WineListScreen(
-                        categoryId: category.id,
-                        subCategoryId: sub.id,
-                        title: sub.nome,
-                        )
-                    ),
-                );
-                },
+      body: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Scegli una sottocategoria",
+              style: Theme.of(context).textTheme.titleLarge,
             ),
-          );
-        },
+
+            const SizedBox(height: 20),
+
+            Expanded(
+              child: ListView.separated(
+                itemCount: subCategories.length,
+                separatorBuilder: (_, __) => const SizedBox(height: 12),
+                itemBuilder: (context, index) {
+                  final sub = subCategories[index];
+
+                  return SubCategoryTile(
+                    title: sub.nome,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => WineListScreen(
+                            categoryId: category.id,
+                            subCategoryId: sub.id,
+                            title: sub.nome,
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

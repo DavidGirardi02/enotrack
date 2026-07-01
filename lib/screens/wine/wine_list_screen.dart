@@ -41,6 +41,7 @@ class _WineListScreenState extends ConsumerState<WineListScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
+        centerTitle: false,
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
@@ -57,14 +58,20 @@ class _WineListScreenState extends ConsumerState<WineListScreen> {
         child: const Icon(Icons.add),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(20),
         child: Column(
           children: [
             TextField(
               controller: searchController,
-              decoration: const InputDecoration(
-                prefixIcon: Icon(Icons.search),
-                hintText: "Cerca vino...",
+              decoration: InputDecoration(
+                hintText: "Cerca un vino...",
+                prefixIcon: const Icon(Icons.search),
+                filled: true,
+                fillColor: Colors.white,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(16),
+                  borderSide: BorderSide.none,
+                ),
               ),
               onChanged: (value) {
                 setState(() {
@@ -73,15 +80,17 @@ class _WineListScreenState extends ConsumerState<WineListScreen> {
               },
             ),
 
-            const SizedBox(height: 16),
+            const SizedBox(height: 20),
 
             Expanded(
               child: winesAsync.when(
-                loading: () =>
-                    const Center(child: CircularProgressIndicator()),
+                loading: () => const Center(
+                  child: CircularProgressIndicator(),
+                ),
 
-                error: (err, stack) =>
-                    Center(child: Text(err.toString())),
+                error: (err, stack) => Center(
+                  child: Text(err.toString()),
+                ),
 
                 data: (allWines) {
                   final wines = allWines.where((wine) {
@@ -103,8 +112,21 @@ class _WineListScreenState extends ConsumerState<WineListScreen> {
                         searchOk;
                   }).toList();
 
-                  return ListView.builder(
+                  if (wines.isEmpty) {
+                    return const Center(
+                      child: Text(
+                        "Nessun vino trovato",
+                        style: TextStyle(
+                          fontSize: 16,
+                        ),
+                      ),
+                    );
+                  }
+
+                  return ListView.separated(
                     itemCount: wines.length,
+                    separatorBuilder: (_, __) =>
+                        const SizedBox(height: 12),
                     itemBuilder: (context, index) {
                       return WineCard(
                         wine: wines[index],

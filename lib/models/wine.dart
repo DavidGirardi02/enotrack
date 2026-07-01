@@ -7,6 +7,7 @@ class Wine {
   final int annata;
   final int quantita;
   final String descrizione;
+  final bool daRiordinare;
   final String? immagine;
 
   const Wine({
@@ -18,6 +19,7 @@ class Wine {
     required this.annata,
     required this.quantita,
     required this.descrizione,
+    required this.daRiordinare,
     this.immagine,
   });
 
@@ -31,6 +33,7 @@ class Wine {
       annata: (map["annata"] ?? 0) as int,
       quantita: (map["quantita"] ?? 0) as int,
       descrizione: map["descrizione"] ?? "",
+      daRiordinare: (map["daRiordinare"] as bool?) ?? false,
       immagine: map["immagine"],
     );
   }
@@ -44,6 +47,7 @@ class Wine {
       "annata": annata,
       "quantita": quantita,
       "descrizione": descrizione,
+      "daRiordinare": daRiordinare,
       "immagine": immagine,
     };
   }
@@ -57,6 +61,7 @@ class Wine {
     int? annata,
     int? quantita,
     String? descrizione,
+    bool? daRiordinare,
     String? immagine,
   }) {
     return Wine(
@@ -68,6 +73,7 @@ class Wine {
       annata: annata ?? this.annata,
       quantita: quantita ?? this.quantita,
       descrizione: descrizione ?? this.descrizione,
+      daRiordinare: daRiordinare ?? this.daRiordinare,
       immagine: immagine ?? this.immagine,
     );
   }
