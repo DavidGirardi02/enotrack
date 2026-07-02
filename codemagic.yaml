@@ -7,14 +7,52 @@ workflows:
       xcode: latest
 
     scripts:
-      - name: Get Flutter packages
+      - name: Flutter pub get
         script: |
           flutter pub get
 
-      - name: Build iOS (no codesign)
+      - name: Build iOS archive
         script: |
-          flutter build ipa --release --no-codesign
+          flutter build ios --release --no-codesign
+
+      - name: Create ExportOptions.plist
+        script: |
+          cat > ExportOptions.plist <<EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+              <key>method</key>
+              <string>development</string>
+
+              <key>destination</key>
+              <string>export</string>
+
+              <key>signingStyle</key>
+              <string>automatic</string>
+
+              <key>compileBitcode</key>
+              <false/>
+
+              <key>stripSwiftSymbols</key>
+              <true/>
+          </dict>
+          </plist>
+          EOF
+
+      - name: Export IPA
+        script: |
+          xcodebuild \
+            -exportArchive \
+            -archivePath build/ios/archive/Runner.xcarchive \
+            -exportPath build/ios/ipa \
+            -exportOptionsPlist ExportOptions.plist
+
+      - name: Show generated files
+        script: |
+          ls -R build/ios
 
     artifacts:
-      - build/ios/ipa/*.ipa
-      - build/ios/archive/*.xcarchive
+      - build/ios/ipa/**/*.ipa
+      - build/ios/archive/**/*.xcarchive
+      - build/ios/**/*.app
