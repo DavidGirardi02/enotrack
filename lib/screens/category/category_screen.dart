@@ -20,6 +20,26 @@ class CategoryScreen extends ConsumerWidget {
       subCategoriesProvider(category.id),
     );
 
+    if (subCategories.isEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (_) => WineListScreen(
+              categoryId: category.id,
+              title: category.nome,
+            ),
+          ),
+        );
+      });
+
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text(category.nome),
@@ -47,6 +67,8 @@ class CategoryScreen extends ConsumerWidget {
                   return SubCategoryTile(
                     title: sub.nome,
                     onTap: () {
+                      print("Apro ${sub.nome}");
+
                       Navigator.push(
                         context,
                         MaterialPageRoute(
